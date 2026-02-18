@@ -22,11 +22,11 @@ export default {
 
             try {
                 const searchResponse = await fetch(
-                \`https://api.cloudflare.com/client/v4/accounts/\${env.ACCOUNT_ID}/ai-search/autorag/\${env.AUTORAG_NAME}/search\`,
+                    `https://api.cloudflare.com/client/v4/accounts/${env.ACCOUNT_ID}/ai-search/autorag/${env.AUTORAG_NAME}/search`,
                     {
                         method: "POST",
                         headers: {
-                            "Authorization": \`Bearer \${env.AI_SEARCH_TOKEN}\`,
+                            "Authorization": `Bearer ${env.AI_SEARCH_TOKEN}`,
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
@@ -39,15 +39,15 @@ export default {
                 if (!searchResponse.ok) {
                     const errorText = await searchResponse.text();
                     console.error("AI Search API Error:", searchResponse.status, errorText);
-                    throw new Error(\`AI Search API failed: \${searchResponse.status}\`);
+                    throw new Error(`AI Search API failed: ${searchResponse.status}`);
                 }
 
                 const data = await searchResponse.json();
-                
+
                 // Transform Cloudflare AI Search response to our frontend format
                 const rows = data.result?.rows || [];
                 const results = rows.map(row => ({
-                    title: "Reference Document", 
+                    title: "Reference Document",
                     snippet: row.text || "No content preview available."
                 }));
 
@@ -70,7 +70,7 @@ export default {
     },
 };
 
-const STYLES = \`:root {
+const STYLES = `:root {
     --bg-white: #ffffff;
     --gemini-blue: #4796e3;
     --gemini-purple: #ad89eb;
@@ -373,9 +373,9 @@ body {
         width: 100%;
     }
 }
-\`;
+`;
 
-const SCRIPT = \`const canvas = document.getElementById('background-canvas');
+const SCRIPT = `const canvas = document.getElementById('background-canvas');
 const ctx = canvas.getContext('2d');
 
 let width, height, particles;
@@ -483,9 +483,9 @@ searchBtn.addEventListener('click', performSearch);
 searchInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') performSearch();
 });
-\`;
+`;
 
-const HTML = \`<!DOCTYPE html>
+const HTML = `<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -541,4 +541,4 @@ const HTML = \`<!DOCTYPE html>
     <script src="/script.js"></script>
 </body>
 </html>
-\`;
+`;
