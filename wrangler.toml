@@ -4,6 +4,6 @@ compatibility_date = "2024-03-18"
 
 [vars]
 ENVIRONMENT = "production"
-ACCOUNT_ID = "13ebdde3f1c7214069372d80970c4b28e"
+ACCOUNT_ID = "13ebdde3f1c7214069372d80970c4b28"
 AUTORAG_NAME = "cf-demo-ai-suite-ai-search"
 AI_SEARCH_TOKEN = "MTbNwYCKPZ7Xu_1tsQnIHWi1reFEdnaw1ldlCPCG"
