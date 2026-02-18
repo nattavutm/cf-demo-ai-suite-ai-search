@@ -162,12 +162,12 @@ body {
 
 /* Hero Section */
 .hero {
-    min-height: 100vh;
+    min-height: calc(100vh - var(--nav-height));
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 120px 24px;
+    padding: 80px 24px;
     text-align: center;
 }
 
@@ -187,50 +187,69 @@ body {
 }
 
 .hero-content p {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     color: var(--text-dim);
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 48px;
 }
 
-.hero-actions {
-    margin-top: 48px;
+/* Search Box Styles */
+.search-container {
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+    margin-top: 2rem;
+}
+
+.search-wrapper {
     display: flex;
-    justify-content: center;
-    gap: 16px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #bfdbfe;
+    border-radius: 100px;
+    padding: 8px 8px 8px 24px;
+    box-shadow: 0 10px 30px rgba(66, 135, 244, 0.1);
+    transition: all 0.3s ease;
 }
 
-.btn-black {
+.search-wrapper:focus-within {
+    border-color: var(--gemini-blue);
+    box-shadow: 0 10px 40px rgba(66, 135, 244, 0.2);
+    background: #fff;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 1.15rem;
+    color: var(--text-main);
+    outline: none;
+    font-family: inherit;
+}
+
+.search-input::placeholder {
+    color: #94a3b8;
+}
+
+.search-btn {
     background: #1f1f1f;
     color: #fff;
-    padding: 14px 32px;
+    border: none;
+    padding: 12px 24px;
     border-radius: 100px;
-    text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.btn-black:hover {
+.search-btn:hover {
     background: #000;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-}
-
-.btn-outline {
-    background: transparent;
-    border: 1px solid #dadce0;
-    color: var(--text-main);
-    padding: 14px 32px;
-    border-radius: 100px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: background 0.2s;
-}
-
-.btn-outline:hover {
-    background: #f8f9fa;
 }
 
 /* Animations */
@@ -350,13 +369,13 @@ const HTML = `<!DOCTYPE html>
     
     <nav class="glass-nav">
         <div class="nav-content">
-            <div class="logo">Cloudflare <span>Demo</span></div>
+            <div class="logo">Cloudflare <span>AI Search</span></div>
             <div class="nav-links">
-                <a href="https://bank-cf-demo-ai-suite.nforce-lab.workers.dev/">Home</a>
+                <a href="#">Product</a>
                 <div class="nav-item">
                     <a href="#use-cases">Use Cases <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; vertical-align:middle; margin-left:2px;"><path d="m6 9 6 6 6-6"/></svg></a>
                     <div class="dropdown">
-                        <a href="#">AI Search</a>
+                        <a href="https://bank-cf-demo-ai-suite.nforce-lab.workers.dev/">Home Landing</a>
                     </div>
                 </div>
                 <a href="#demo" class="btn-pill">Get Started</a>
@@ -367,12 +386,17 @@ const HTML = `<!DOCTYPE html>
     <main>
         <section class="hero">
             <div class="hero-content">
-                <h1 class="fade-in">Confidently scale <span>AI Search</span></h1>
-                <p class="fade-up" style="font-weight: 700; color: var(--text-main); margin-bottom: 12px; text-align: center;">Unlock the power of your enterprise data with secure, high-performance AI Search.</p>
-                <p class="fade-up" style="font-size: 1.1rem; max-width: 800px; text-align: center; color: var(--text-dim);">Cloudflare AI Search provides a high-performance, secure foundation for building next-generation search experiences. Levering our global network, you can deliver sub-second response times while ensuring your sensitive data remains protected and compliant.</p>
-                <div class="hero-actions">
-                    <a href="#demo" class="btn-black">Try Search Demo</a>
-                    <a href="https://developers.cloudflare.com/workers/learning/vectorize/" target="_blank" class="btn-outline">View Documentation</a>
+                <h1 class="fade-in">Search the <span>Knowledge</span></h1>
+                <p class="fade-up">Experience powerful AI-driven search, delivered at the edge by Cloudflare...</p>
+                
+                <div class="search-container fade-up" style="animation-delay: 0.4s;">
+                    <div class="search-wrapper">
+                        <input type="text" class="search-input" placeholder="Type your search query here...">
+                        <button class="search-btn">
+                            Search
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
