@@ -2,44 +2,7 @@ export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
 
-        // API Endpoint for Search
-        if (url.pathname === "/api/search") {
-            const query = url.searchParams.get("q");
-            if (!query) return new Response("Missing query", { status: 400 });
-
-            try {
-                // Check if credentials are set
-                if (!env.ACCOUNT_ID || !env.AUTORAG_NAME || !env.AI_SEARCH_TOKEN) {
-                    return new Response(JSON.stringify({
-                        error: "Credentials missing. Please set ACCOUNT_ID, AUTORAG_NAME, and AI_SEARCH_TOKEN in wrangler.toml or as secrets."
-                    }), { status: 500, headers: { "Content-Type": "application/json" } });
-                }
-
-                const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${env.ACCOUNT_ID}/autorag/rags/${env.AUTORAG_NAME}/ai-search`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${env.AI_SEARCH_TOKEN}`
-                    },
-                    body: JSON.stringify({
-                        query: query,
-                        model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-                        max_num_results: 5
-                    })
-                });
-
-                const data = await response.json();
-                return new Response(JSON.stringify(data), {
-                    headers: { "Content-Type": "application/json" }
-                });
-            } catch (e) {
-                return new Response(JSON.stringify({ error: e.message }), {
-                    status: 500,
-                    headers: { "Content-Type": "application/json" }
-                });
-            }
-        }
-
+        // Simple routing for static assets
         if (url.pathname === "/style.css") {
             return new Response(STYLES, {
                 headers: { "content-type": "text/css" },
@@ -65,8 +28,7 @@ const STYLES = `:root {
     --gemini-pink: #ca6673;
     --text-main: #1f1f1f;
     --text-dim: #444746;
-    --nav-height: 80px;
-    --primary-glow: rgba(71, 150, 227, 0.2);
+    --nav-height: 64px;
 }
 
 * {
@@ -81,6 +43,7 @@ body {
     color: var(--text-main);
     line-height: 1.5;
     overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #background-canvas {
@@ -98,17 +61,16 @@ body {
     top: 0;
     width: 100%;
     height: var(--nav-height);
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
     z-index: 1000;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .nav-content {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 24px;
     display: flex;
@@ -120,9 +82,6 @@ body {
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--text-main);
-    display: flex;
-    align-items: center;
-    gap: 8px;
 }
 
 .logo span {
@@ -130,122 +89,149 @@ body {
     color: var(--text-dim);
 }
 
-/* AI Search Container */
-.search-container {
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.nav-item {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.nav-links a:hover {
+    opacity: 0.7;
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 200px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 1001;
+}
+
+.nav-item:hover .dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.dropdown a {
+    display: block;
+    padding: 12px 16px;
+    color: var(--text-main) !important;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.dropdown a:hover {
+    background: #f5f5f7;
+    opacity: 1 !important;
+}
+
+.btn-pill {
+    background: #000;
+    color: #fff !important;
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-weight: 600 !important;
+}
+
+/* Hero Section */
+.hero {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 100px 24px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.hero-title {
-    font-size: clamp(2.5rem, 8vw, 4rem);
-    font-weight: 700;
-    margin-bottom: 16px;
+    padding: 120px 24px;
     text-align: center;
-    letter-spacing: -0.02em;
 }
 
-.hero-title span {
+.hero-content h1 {
+    font-size: clamp(3rem, 10vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+}
+
+.hero-content h1 span {
     background: linear-gradient(90deg, var(--gemini-blue), var(--gemini-purple), var(--gemini-pink));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.hero-subtitle {
-    font-size: 1.1rem;
+.hero-content p {
+    font-size: 1.25rem;
     color: var(--text-dim);
-    margin-bottom: 48px;
-    text-align: center;
-    max-width: 600px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* Prompt Box */
-.prompt-box {
-    width: 100%;
-    background: #ffffff;
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: 24px;
-    padding: 8px;
+.hero-actions {
+    margin-top: 48px;
     display: flex;
-    align-items: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    justify-content: center;
+    gap: 16px;
 }
 
-.prompt-box:focus-within {
-    box-shadow: 0 15px 40px rgba(71, 150, 227, 0.15);
-    border-color: var(--gemini-blue);
-    transform: translateY(-2px);
-}
-
-.prompt-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    padding: 16px 24px;
-    font-size: 1.1rem;
-    font-family: inherit;
-    background: transparent;
-}
-
-.search-btn {
+.btn-black {
     background: #1f1f1f;
     color: #fff;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 18px;
+    padding: 14px 32px;
+    border-radius: 100px;
+    text-decoration: none;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-.search-btn:hover {
+.btn-black:hover {
     background: #000;
-    transform: scale(1.02);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
 }
 
-/* Results Area */
-.results-area {
-    margin-top: 40px;
-    width: 100%;
-    display: none;
-}
-
-.glass-card {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(0,0,0,0.05);
-    border-radius: 24px;
-    padding: 32px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-}
-
-.terminal-mock {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.1rem;
+.btn-outline {
+    background: transparent;
+    border: 1px solid #dadce0;
     color: var(--text-main);
-    line-height: 1.8;
+    padding: 14px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
 }
 
-.terminal-mock h3 {
-    margin-bottom: 16px;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--gemini-blue);
+.btn-outline:hover {
+    background: #f8f9fa;
 }
-
-.line { margin-bottom: 8px; }
-.accent { color: var(--gemini-blue); font-weight: 600; }
 
 /* Animations */
 .fade-in {
@@ -270,42 +256,15 @@ body {
     }
 }
 
-footer {
-    padding: 40px;
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 0.9rem;
-}
-
-.nav-links {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-}
-
-.nav-links a {
-    color: var(--text-main);
-    text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: 700;
-    transition: opacity 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.nav-links a:hover {
-    opacity: 0.7;
-}
-
-.btn-pill {
-    background: #000 !important;
-    color: #fff !important;
-    padding: 14px 36px !important;
-    border-radius: 100px !important;
-    font-weight: 700 !important;
-    text-decoration: none !important;
-    font-size: 1.1rem !important;
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .floating-cards {
+        flex-direction: column;
+    }
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
+    }
 }
 `;
 
@@ -324,21 +283,21 @@ class Particle {
     reset() {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.radius = Math.random() * 2 + 0.5;
+        this.radius = Math.random() * 2 + 1;
         this.color = colors[Math.floor(Math.random() * colors.length)];
         this.angle = Math.random() * Math.PI * 2;
-        this.velocity = Math.random() * 0.3 + 0.1;
-        this.orbitRadius = Math.random() * 400 + 100;
+        this.velocity = Math.random() * 0.5 + 0.2;
+        this.orbitRadius = Math.random() * 300 + 50;
         this.centerX = width / 2;
         this.centerY = height / 2;
     }
 
     update() {
-        this.angle += this.velocity * 0.005;
+        this.angle += this.velocity * 0.01;
         this.x = this.centerX + Math.cos(this.angle) * this.orbitRadius;
         this.y = this.centerY + Math.sin(this.angle) * this.orbitRadius;
 
-        if (this.x < -100 || this.x > width + 100 || this.y < -100 || this.y > height + 100) {
+        if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
             this.reset();
         }
     }
@@ -347,7 +306,7 @@ class Particle {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
-        ctx.globalAlpha = 0.4;
+        ctx.globalAlpha = 0.6;
         ctx.fill();
     }
 }
@@ -356,7 +315,7 @@ function init() {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
     particles = [];
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 150; i++) {
         particles.push(new Particle());
     }
 }
@@ -373,98 +332,51 @@ function animate() {
 window.addEventListener('resize', init);
 init();
 animate();
-
-// UI Interactions
-const searchBtn = document.querySelector('.search-btn');
-const input = document.querySelector('.prompt-input');
-const results = document.querySelector('.results-area');
-const contentArea = document.querySelector('.terminal-mock');
-
-async function performSearch() {
-    const query = input.value.trim();
-    if (!query) return;
-
-    results.style.display = 'block';
-    results.classList.add('fade-up');
-    contentArea.innerHTML = '<h3>Search Status</h3><div class="line"><span class="accent">[AI Search]</span> Analyzing query and retrieving knowledge...</div>';
-
-    try {
-        const response = await fetch('/api/search?q=' + encodeURIComponent(query));
-        const data = await response.json();
-
-        if (data.error) {
-            contentArea.innerHTML = '<h3>Error</h3><div class="line" style="color:#ca6673;">' + data.error + '</div>';
-            return;
-        }
-
-        // Handle AI Search Response (Autorag style)
-        if (data.result && data.result.response) {
-            contentArea.innerHTML = '<h3>AI Response</h3><div class="line">' + data.result.response + '</div>';
-        } else {
-            contentArea.innerHTML = '<h3>Results</h3><div class="line">' + JSON.stringify(data, null, 2) + '</div>';
-        }
-    } catch (e) {
-        contentArea.innerHTML = '<h3>Error</h3><div class="line" style="color:#ca6673;">Failed to connect to the search service.</div>';
-    }
-}
-
-searchBtn.addEventListener('click', performSearch);
-input.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') performSearch();
-});
 `;
 
 const HTML = `<!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloudflare AI Search | Antigravity</title>
+    <title>Cloudflare AI Search | Antigravity Style</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="light-theme">
     <canvas id="background-canvas"></canvas>
     
     <nav class="glass-nav">
         <div class="nav-content">
-            <div class="logo">Cloudflare <span>AI Search</span></div>
+            <div class="logo">Cloudflare <span>Demo</span></div>
             <div class="nav-links">
-                <a href="#">Product</a>
-                <a href="#">Use Cases <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></a>
-                <a href="#" class="btn-pill">Get Started</a>
+                <a href="https://bank-cf-demo-ai-suite.nforce-lab.workers.dev/">Home</a>
+                <div class="nav-item">
+                    <a href="#use-cases">Use Cases <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; vertical-align:middle; margin-left:2px;"><path d="m6 9 6 6 6-6"/></svg></a>
+                    <div class="dropdown">
+                        <a href="#">AI Search</a>
+                    </div>
+                </div>
+                <a href="#demo" class="btn-pill">Get Started</a>
             </div>
         </div>
     </nav>
 
     <main>
-        <div class="search-container">
-            <h1 class="hero-title fade-in">Search the <span>Knowledge</span></h1>
-            <p class="hero-subtitle fade-up">Experience powerful AI-driven search, delivered at the edge by Cloudflare...</p>
-            
-            <div class="prompt-box fade-up">
-                <input type="text" class="prompt-input" placeholder="Type your search query here..." autofocus>
-                <button class="search-btn">
-                    <span>Search</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                </button>
-            </div>
-
-            <div class="results-area">
-                <div class="glass-card">
-                    <div class="terminal-mock">
-                        <!-- Content injected via JS -->
-                    </div>
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="fade-in">Confidently scale <span>AI Search</span></h1>
+                <p class="fade-up" style="font-weight: 700; color: var(--text-main); margin-bottom: 12px; text-align: center;">Unlock the power of your enterprise data with secure, high-performance AI Search.</p>
+                <p class="fade-up" style="font-size: 1.1rem; max-width: 800px; text-align: center; color: var(--text-dim);">Cloudflare AI Search provides a high-performance, secure foundation for building next-generation search experiences. Levering our global network, you can deliver sub-second response times while ensuring your sensitive data remains protected and compliant.</p>
+                <div class="hero-actions">
+                    <a href="#demo" class="btn-black">Try Search Demo</a>
+                    <a href="https://developers.cloudflare.com/workers/learning/vectorize/" target="_blank" class="btn-outline">View Documentation</a>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
-
-    <footer>
-        <p>&copy; 2026 Cloudflare AI Suite. Created by Bank Nattavut</p>
-    </footer>
 
     <script src="/script.js"></script>
 </body>
