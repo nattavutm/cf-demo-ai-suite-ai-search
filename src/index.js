@@ -2,6 +2,44 @@ export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
 
+        // API Endpoint for Search
+        if (url.pathname === "/api/search") {
+            const query = url.searchParams.get("q");
+            if (!query) return new Response("Missing query", { status: 400 });
+
+            try {
+                // Check if credentials are set
+                if (!env.ACCOUNT_ID || !env.AUTORAG_NAME || !env.AI_SEARCH_TOKEN) {
+                    return new Response(JSON.stringify({
+                        error: "Credentials missing. Please set ACCOUNT_ID, AUTORAG_NAME, and AI_SEARCH_TOKEN in wrangler.toml or as secrets."
+                    }), { status: 500, headers: { "Content-Type": "application/json" } });
+                }
+
+                const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${env.ACCOUNT_ID}/autorag/rags/${env.AUTORAG_NAME}/ai-search`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${env.AI_SEARCH_TOKEN}`
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+                        max_num_results: 5
+                    })
+                });
+
+                const data = await response.json();
+                return new Response(JSON.stringify(data), {
+                    headers: { "Content-Type": "application/json" }
+                });
+            } catch (e) {
+                return new Response(JSON.stringify({ error: e.message }), {
+                    status: 500,
+                    headers: { "Content-Type": "application/json" }
+                });
+            }
+        }
+
         if (url.pathname === "/style.css") {
             return new Response(STYLES, {
                 headers: { "content-type": "text/css" },
@@ -175,11 +213,11 @@ body {
     transform: scale(1.02);
 }
 
-/* Results Area (Placeholder) */
+/* Results Area */
 .results-area {
     margin-top: 40px;
     width: 100%;
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 .glass-card {
@@ -192,10 +230,18 @@ body {
 }
 
 .terminal-mock {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
-    color: var(--text-dim);
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    color: var(--text-main);
     line-height: 1.8;
+}
+
+.terminal-mock h3 {
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gemini-blue);
 }
 
 .line { margin-bottom: 8px; }
@@ -332,21 +378,39 @@ animate();
 const searchBtn = document.querySelector('.search-btn');
 const input = document.querySelector('.prompt-input');
 const results = document.querySelector('.results-area');
+const contentArea = document.querySelector('.terminal-mock');
 
-searchBtn.addEventListener('click', () => {
-    if (input.value.trim()) {
-        results.style.display = 'block';
-        results.classList.add('fade-up');
-        // Simulated response
-        const mockTerminal = document.querySelector('.terminal-mock');
-        mockTerminal.innerHTML = '<div class="line"><span class="accent">[AI Search]</span> Analyzing query: ' + input.value + '...</div>' +
-                                '<div class="line"><span class="accent">[Vector]</span> Searching Cloudflare Vector Database...</div>' +
-                                '<div class="line">... Ready to connect with actual AI Search logic later.</div>';
+async function performSearch() {
+    const query = input.value.trim();
+    if (!query) return;
+
+    results.style.display = 'block';
+    results.classList.add('fade-up');
+    contentArea.innerHTML = '<h3>Search Status</h3><div class="line"><span class="accent">[AI Search]</span> Analyzing query and retrieving knowledge...</div>';
+
+    try {
+        const response = await fetch('/api/search?q=' + encodeURIComponent(query));
+        const data = await response.json();
+
+        if (data.error) {
+            contentArea.innerHTML = '<h3>Error</h3><div class="line" style="color:#ca6673;">' + data.error + '</div>';
+            return;
+        }
+
+        // Handle AI Search Response (Autorag style)
+        if (data.result && data.result.response) {
+            contentArea.innerHTML = '<h3>AI Response</h3><div class="line">' + data.result.response + '</div>';
+        } else {
+            contentArea.innerHTML = '<h3>Results</h3><div class="line">' + JSON.stringify(data, null, 2) + '</div>';
+        }
+    } catch (e) {
+        contentArea.innerHTML = '<h3>Error</h3><div class="line" style="color:#ca6673;">Failed to connect to the search service.</div>';
     }
-});
+}
 
+searchBtn.addEventListener('click', performSearch);
 input.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') searchBtn.click();
+    if (e.key === 'Enter') performSearch();
 });
 `;
 
