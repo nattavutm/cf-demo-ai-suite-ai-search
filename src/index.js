@@ -22,7 +22,7 @@ export default {
 
             try {
                 const searchResponse = await fetch(
-                    `https://api.cloudflare.com/client/v4/accounts/${env.ACCOUNT_ID}/ai-search/autorag/${env.AUTORAG_NAME}/search`,
+                    `https://api.cloudflare.com/client/v4/accounts/${env.ACCOUNT_ID}/autorag/rags/${env.AUTORAG_NAME}/ai-search`,
                     {
                         method: "POST",
                         headers: {
@@ -45,11 +45,19 @@ export default {
                 const data = await searchResponse.json();
 
                 // Transform Cloudflare AI Search response to our frontend format
-                const rows = data.result?.rows || [];
+                const rows = data.result?.data || [];
                 const results = rows.map(row => ({
-                    title: "Reference Document",
-                    snippet: row.text || "No content preview available."
+                    title: row.filename || "Reference Document",
+                    snippet: row.content?.[0]?.text || row.text || "No content preview available."
                 }));
+
+                // Add the generated answer if available
+                if (data.result?.response) {
+                    results.unshift({
+                        title: "AI Generated Answer",
+                        snippet: data.result.response
+                    });
+                }
 
                 return new Response(JSON.stringify({ results }), {
                     headers: { "content-type": "application/json" }
