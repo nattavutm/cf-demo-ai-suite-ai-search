@@ -70,283 +70,283 @@ export default {
     },
 };
 
-const STYLES = `:root {
-                    --bg - white: #ffffff;
-                    --gemini - blue: #4796e3;
-                    --gemini - purple: #ad89eb;
-                    --gemini - pink: #ca6673;
-                    --text - main: #1f1f1f;
-                    --text - dim: #444746;
-                    --nav - height: 64px;
-                }
-
-* {
-                    margin: 0;
-                    padding: 0;
-                    box- sizing: border - box;
-            }
-
-body {
-                font - family: 'Outfit', sans - serif;
-                background - color: var(--bg - white);
-                color: var(--text - main);
-                line - height: 1.5;
-                overflow - x: hidden;
-                overflow - y: auto;
-            }
-
-            #background - canvas {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100 %;
-                height: 100 %;
-                z - index: -1;
-                background: #ffffff;
-            }
-
-.glass - nav {
-    position: fixed;
-    top: 0;
-    width: 100 %;
-    height: var(--nav - height);
-    background: rgba(255, 255, 255, 0.7);
-    backdrop - filter: blur(8px);
-    z - index: 1000;
-    display: flex;
-    align - items: center;
+const STYLES = \`:root {
+    --bg-white: #ffffff;
+    --gemini-blue: #4796e3;
+    --gemini-purple: #ad89eb;
+    --gemini-pink: #ca6673;
+    --text-main: #1f1f1f;
+    --text-dim: #444746;
+    --nav-height: 64px;
 }
 
-.nav - content {
-    width: 100 %;
-    max - width: 1400px;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-white);
+    color: var(--text-main);
+    line-height: 1.5;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#background-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: #ffffff;
+}
+
+.glass-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: var(--nav-height);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+.nav-content {
+    width: 100%;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 24px;
     display: flex;
-    justify - content: space - between;
-    align - items: center;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .logo {
-    font - size: 1.25rem;
-    font - weight: 600;
-    color: var(--text - main);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-main);
 }
 
 .logo span {
-    font - weight: 400;
-    color: var(--text - dim);
+    font-weight: 400;
+    color: var(--text-dim);
 }
 
-.nav - links {
+.nav-links {
     display: flex;
-    align - items: center;
+    align-items: center;
     gap: 32px;
 }
 
-.nav - item {
+.nav-item {
     position: relative;
-    height: 100 %;
+    height: 100%;
     display: flex;
-    align - items: center;
+    align-items: center;
 }
 
-.nav - links a {
-    color: var(--text - main);
-    text - decoration: none;
-    font - size: 0.9rem;
-    font - weight: 500;
+.nav-links a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
     transition: opacity 0.2s;
 }
 
-.nav - links a:hover {
+.nav-links a:hover {
     opacity: 0.7;
 }
 
 .dropdown {
     position: absolute;
-    top: 100 %;
-    left: 50 %;
-    transform: translateX(-50 %) translateY(10px);
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
     background: #ffffff;
     border: 1px solid #e0e0e0;
-    border - radius: 12px;
+    border-radius: 12px;
     padding: 8px;
-    min - width: 200px;
-    box - shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     opacity: 0;
     visibility: hidden;
     transition: all 0.2s ease;
-    z - index: 1001;
+    z-index: 1001;
 }
 
-.nav - item: hover.dropdown {
+.nav-item:hover .dropdown {
     opacity: 1;
     visibility: visible;
-    transform: translateX(-50 %) translateY(0);
+    transform: translateX(-50%) translateY(0);
 }
 
 .dropdown a {
     display: block;
     padding: 12px 16px;
-    color: var(--text - main)!important;
-    font - size: 0.85rem;
-    font - weight: 500;
-    border - radius: 8px;
+    color: var(--text-main) !important;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 8px;
     transition: background 0.2s;
 }
 
 .dropdown a:hover {
     background: #f5f5f7;
-    opacity: 1!important;
+    opacity: 1 !important;
 }
 
-.btn - pill {
+.btn-pill {
     background: #000;
-    color: #fff!important;
+    color: #fff !important;
     padding: 10px 24px;
-    border - radius: 100px;
-    font - weight: 600!important;
+    border-radius: 100px;
+    font-weight: 600 !important;
 }
 
 /* Hero Section */
 .hero {
-    min - height: calc(100vh - var(--nav - height));
+    min-height: calc(100vh - var(--nav-height));
     display: flex;
-    flex - direction: column;
-    justify - content: center;
-    align - items: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: 80px 24px;
-    text - align: center;
+    text-align: center;
 }
 
-.hero - content h1 {
-    font - size: clamp(3rem, 10vw, 5.5rem);
-    font - weight: 700;
-    line - height: 1.05;
-    margin - bottom: 24px;
-    letter - spacing: -0.02em;
-    color: var(--text - main);
+.hero-content h1 {
+    font-size: clamp(3rem, 10vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
 }
 
-.hero - content h1 span {
-    background: linear - gradient(90deg, var(--gemini - blue), var(--gemini - purple), var(--gemini - pink));
-    -webkit - background - clip: text;
-    -webkit - text - fill - color: transparent;
+.hero-content h1 span {
+    background: linear-gradient(90deg, var(--gemini-blue), var(--gemini-purple), var(--gemini-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.hero - content p {
-    font - size: 1.15rem;
-    color: var(--text - dim);
-    max - width: 800px;
-    margin - left: auto;
-    margin - right: auto;
-    margin - bottom: 48px;
+.hero-content p {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 48px;
 }
 
-.hero - actions {
-    margin - top: 48px;
+.hero-actions {
+    margin-top: 48px;
     display: flex;
-    justify - content: center;
+    justify-content: center;
     gap: 16px;
 }
 
-.btn - black {
+.btn-black {
     background: #1f1f1f;
     color: #fff;
     padding: 14px 32px;
-    border - radius: 100px;
-    text - decoration: none;
-    font - weight: 600;
-    transition: all 0.3s cubic - bezier(0.4, 0, 0.2, 1);
-    box - shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-.btn - black:hover {
+.btn-black:hover {
     background: #000;
     transform: translateY(-1px);
-    box - shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
 }
 
-.btn - outline {
+.btn-outline {
     background: transparent;
     border: 1px solid #dadce0;
-    color: var(--text - main);
+    color: var(--text-main);
     padding: 14px 32px;
-    border - radius: 100px;
-    text - decoration: none;
-    font - weight: 600;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 600;
     transition: background 0.2s;
 }
 
-.btn - outline:hover {
+.btn-outline:hover {
     background: #f8f9fa;
 }
 
 /* Search Box Styles */
-.search - container {
-    width: 100 %;
-    max - width: 800px;
+.search-container {
+    width: 100%;
+    max-width: 800px;
     position: relative;
-    margin - top: 2rem;
+    margin-top: 2rem;
 }
 
-.search - wrapper {
+.search-wrapper {
     display: flex;
-    align - items: center;
+    align-items: center;
     background: rgba(255, 255, 255, 0.8);
     border: 1px solid #bfdbfe;
-    border - radius: 100px;
+    border-radius: 100px;
     padding: 8px 8px 8px 24px;
-    box - shadow: 0 10px 30px rgba(66, 135, 244, 0.1);
+    box-shadow: 0 10px 30px rgba(66, 135, 244, 0.1);
     transition: all 0.3s ease;
 }
 
-.search - wrapper: focus - within {
-    border - color: var(--gemini - blue);
-    box - shadow: 0 10px 40px rgba(66, 135, 244, 0.2);
+.search-wrapper:focus-within {
+    border-color: var(--gemini-blue);
+    box-shadow: 0 10px 40px rgba(66, 135, 244, 0.2);
     background: #fff;
 }
 
-.search - input {
+.search-input {
     flex: 1;
     border: none;
     background: transparent;
-    font - size: 1.15rem;
-    color: var(--text - main);
+    font-size: 1.15rem;
+    color: var(--text-main);
     outline: none;
-    font - family: inherit;
+    font-family: inherit;
 }
 
-.search - input::placeholder {
+.search-input::placeholder {
     color: #94a3b8;
 }
 
-.search - btn {
+.search-btn {
     background: #1f1f1f;
     color: #fff;
     border: none;
     padding: 12px 24px;
-    border - radius: 100px;
-    font - weight: 600;
+    border-radius: 100px;
+    font-weight: 600;
     display: flex;
-    align - items: center;
+    align-items: center;
     gap: 8px;
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.search - btn:hover {
+.search-btn:hover {
     background: #000;
 }
 
 /* Animations */
-.fade -in {
+.fade-in {
     opacity: 0;
     animation: fadeIn 0.8s forwards;
 }
 
-    .fade - up {
+.fade-up {
     opacity: 0;
     transform: translateY(20px);
     animation: fadeUp 0.8s 0.2s forwards;
@@ -364,16 +364,16 @@ body {
 }
 
 /* Mobile Responsive */
-@media(max - width: 768px) {
-    .floating - cards {
-        flex - direction: column;
+@media (max-width: 768px) {
+    .floating-cards {
+        flex-direction: column;
     }
-    .hero - actions {
-        flex - direction: column;
-        width: 100 %;
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
     }
 }
-`;
+\`;
 
 const SCRIPT = \`const canvas = document.getElementById('background-canvas');
 const ctx = canvas.getContext('2d');
@@ -485,60 +485,60 @@ searchInput.addEventListener('keypress', (e) => {
 });
 \`;
 
-const HTML = `< !DOCTYPE html >
-    <html lang="th">
-        <head>
-            <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Cloudflare AI Search | Antigravity Style</title>
-                    <link rel="stylesheet" href="/style.css">
-                        <link rel="preconnect" href="https://fonts.googleapis.com">
-                            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                                <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
-                                </head>
-                                <body class="light-theme">
-                                    <canvas id="background-canvas"></canvas>
+const HTML = \`<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudflare AI Search | Antigravity Style</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+</head>
+<body class="light-theme">
+    <canvas id="background-canvas"></canvas>
+    
+    <nav class="glass-nav">
+        <div class="nav-content">
+            <div class="logo">Cloudflare <span>AI Search</span></div>
+            <div class="nav-links">
+                <a href="#">Product</a>
+                <div class="nav-item">
+                    <a href="#use-cases">Use Cases <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; vertical-align:middle; margin-left:2px;"><path d="m6 9 6 6 6-6"/></svg></a>
+                    <div class="dropdown">
+                        <a href="https://bank-cf-demo-ai-suite.nforce-lab.workers.dev/">Home Landing</a>
+                    </div>
+                </div>
+                <a href="#demo" class="btn-pill">Get Started</a>
+            </div>
+        </div>
+    </nav>
 
-                                    <nav class="glass-nav">
-                                        <div class="nav-content">
-                                            <div class="logo">Cloudflare <span>AI Search</span></div>
-                                            <div class="nav-links">
-                                                <a href="#">Product</a>
-                                                <div class="nav-item">
-                                                    <a href="#use-cases">Use Cases <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline; vertical-align:middle; margin-left:2px;"><path d="m6 9 6 6 6-6" /></svg></a>
-                                                    <div class="dropdown">
-                                                        <a href="https://bank-cf-demo-ai-suite.nforce-lab.workers.dev/">Home Landing</a>
-                                                    </div>
-                                                </div>
-                                                <a href="#demo" class="btn-pill">Get Started</a>
-                                            </div>
-                                        </div>
-                                    </nav>
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="fade-in">Search the <span>Knowledge</span></h1>
+                <p class="fade-up">Experience powerful AI-driven search, delivered at the edge by Cloudflare...</p>
+                
+                <div class="search-container fade-up" style="animation-delay: 0.4s;">
+                    <div class="search-wrapper">
+                        <input type="text" class="search-input" placeholder="Type your search query here...">
+                        <button class="search-btn">
+                            Search
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="search-results" class="fade-up" style="animation-delay: 0.6s; margin-top: 2rem; width: 100%; max-width: 800px; text-align: left; display: none;">
+                    <!-- Results will appear here -->
+                </div>
+            </div>
+        </section>
+    </main>
 
-                                    <main>
-                                        <section class="hero">
-                                            <div class="hero-content">
-                                                <h1 class="fade-in">Search the <span>Knowledge</span></h1>
-                                                <p class="fade-up">Experience powerful AI-driven search, delivered at the edge by Cloudflare...</p>
-
-                                                <div class="search-container fade-up" style="animation-delay: 0.4s;">
-                                                    <div class="search-wrapper">
-                                                        <input type="text" class="search-input" placeholder="Type your search query here...">
-                                                            <button class="search-btn">
-                                                                Search
-                                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-                                                            </button>
-                                                    </div>
-                                                </div>
-
-                                                <div id="search-results" class="fade-up" style="animation-delay: 0.6s; margin-top: 2rem; width: 100%; max-width: 800px; text-align: left; display: none;">
-                                                    <!-- Results will appear here -->
-                                                </div>
-                                            </div>
-                                        </section>
-                                    </main>
-
-                                    <script src="/script.js"></script>
-                                </body>
-                            </html>
-                            `;
+    <script src="/script.js"></script>
+</body>
+</html>
+\`;
