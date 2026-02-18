@@ -45,15 +45,12 @@ export default {
                 const data = await searchResponse.json();
 
                 // Transform Cloudflare AI Search response to our frontend format
-                const rows = data.result?.data || [];
-                const results = rows.map(row => ({
-                    title: row.filename || "Reference Document",
-                    snippet: row.content?.[0]?.text || row.text || "No content preview available."
-                }));
+                const results = [];
 
                 // Add the generated answer if available
                 if (data.result?.response) {
-                    results.unshift({
+                    results.push({
+                        type: 'answer',
                         title: "AI Generated Answer",
                         snippet: data.result.response
                     });
@@ -469,12 +466,19 @@ async function performSearch() {
         
         // Render Results
         if (data.results && data.results.length > 0) {
-            resultsContainer.innerHTML = data.results.map(result => \`
-                <div style="background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); padding: 20px; border-radius: 16px; margin-bottom: 12px; border: 1px solid #e5e7eb; transition: transform 0.2s;">
-                    <h3 style="color: var(--gemini-blue); margin-bottom: 6px; font-size: 1.1rem;">\${result.title}</h3>
-                    <p style="color: var(--text-dim); font-size: 0.95rem;">\${result.snippet}</p>
+            resultsContainer.innerHTML = data.results.map(result => {
+                const isAnswer = result.type === 'answer';
+                // Darker/Solid style for answer
+                const style = isAnswer 
+                    ? 'background: #fbfbfa; border: 2px solid var(--gemini-blue); box-shadow: 0 4px 20px rgba(71, 150, 227, 0.2);' 
+                    : 'background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid #e5e7eb;';
+                
+                return \`
+                <div style="\${style} padding: 24px; border-radius: 18px; margin-bottom: 16px; transition: all 0.2s ease;">
+                    <h3 style="color: var(--gemini-blue); margin-bottom: 8px; font-size: 1.2rem; font-weight: 600;">\${result.title}</h3>
+                    <p style="color: var(--text-main); font-size: 1rem; line-height: 1.6;">\${result.snippet}</p>
                 </div>
-            \`).join('');
+            \`}).join('');
         } else {
             resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-dim);">No results found.</div>';
         }

@@ -2,3 +2,8 @@
 node_modules/
 .dev.vars
 dist/
+
+verify-search.js
+response.json
+package.json
+package-lock.json
