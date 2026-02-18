@@ -15,6 +15,25 @@ export default {
             });
         }
 
+        // Search API endpoint
+        if (url.pathname === "/api/search") {
+            const query = url.searchParams.get("q");
+            if (!query) return new Response("Missing query", { status: 400 });
+
+            // TODO: Connect this to the actual AI Search / Vectorize backend
+            // using env.AI_SEARCH_TOKEN and env.AUTORAG_NAME
+
+            // Mock response for now to prove connectivity
+            return new Response(JSON.stringify({
+                results: [
+                    { title: "AI Search Architecture", snippet: "Cloudflare AI Search uses Vectorize and Workers AI..." },
+                    { title: "Security Features", snippet: "Enterprise-grade security with zero-trust integration..." }
+                ]
+            }), {
+                headers: { "content-type": "application/json" }
+            });
+        }
+
         return new Response(HTML, {
             headers: { "content-type": "text/html;charset=UTF-8" },
         });
@@ -351,6 +370,50 @@ function animate() {
 window.addEventListener('resize', init);
 init();
 animate();
+
+// Search Logic
+const searchInput = document.querySelector('.search-input');
+const searchBtn = document.querySelector('.search-btn');
+const resultsContainer = document.getElementById('search-results');
+
+async function performSearch() {
+    const query = searchInput.value.trim();
+    if (!query) return;
+
+    // UI Loading State
+    searchBtn.textContent = 'Searching...';
+    searchBtn.disabled = true;
+    resultsContainer.style.display = 'block';
+    resultsContainer.innerHTML = '<div style="background: rgba(255,255,255,0.8); padding: 20px; border-radius: 12px; text-align: center; color: var(--text-dim);">Searching knowledge base...</div>';
+
+    try {
+        const res = await fetch(\`/api/search?q=\${encodeURIComponent(query)}\`);
+        const data = await res.json();
+        
+        // Render Results
+        if (data.results && data.results.length > 0) {
+            resultsContainer.innerHTML = data.results.map(result => \`
+                <div style="background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); padding: 20px; border-radius: 16px; margin-bottom: 12px; border: 1px solid #e5e7eb; transition: transform 0.2s;">
+                    <h3 style="color: var(--gemini-blue); margin-bottom: 6px; font-size: 1.1rem;">\${result.title}</h3>
+                    <p style="color: var(--text-dim); font-size: 0.95rem;">\${result.snippet}</p>
+                </div>
+            \`).join('');
+        } else {
+            resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-dim);">No results found.</div>';
+        }
+    } catch (e) {
+        console.error(e);
+        resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #ef4444;">Error performing search.</div>';
+    } finally {
+        searchBtn.innerHTML = 'Search <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>';
+        searchBtn.disabled = false;
+    }
+}
+
+searchBtn.addEventListener('click', performSearch);
+searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') performSearch();
+});
 `;
 
 const HTML = `<!DOCTYPE html>
@@ -397,6 +460,10 @@ const HTML = `<!DOCTYPE html>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                         </button>
                     </div>
+                </div>
+                
+                <div id="search-results" class="fade-up" style="animation-delay: 0.6s; margin-top: 2rem; width: 100%; max-width: 800px; text-align: left; display: none;">
+                    <!-- Results will appear here -->
                 </div>
             </div>
         </section>
